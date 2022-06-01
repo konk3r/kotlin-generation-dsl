@@ -18,15 +18,19 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         codeBlock = builder.build()
     }
 
-    fun controlFlow(prefix: String, vararg prefixArgs: Any?, suffix: String = "", function: (CodeTemplate.() -> Unit)? = null) {
+    fun controlFlowCode(prefix: String, vararg prefixArgs: Any?,
+                        suffix: String = "",
+                        beginFlowString: String = "·{",
+                        endFlowString: String = "}",
+                        function: (CodeTemplate.() -> Unit)? = null) {
         builder.add(prefix, *prefixArgs)
-        builder.add("·{\n")
+        builder.add("$beginFlowString\n")
         builder.indent()
 
         function?.let { this.function() }
 
         builder.unindent()
-        builder.add("}$suffix\n")
+        builder.add("\n${endFlowString}$suffix\n")
     }
 
     fun collectCodeTemplates(function: () -> Collection<CodeTemplate>) {
@@ -35,37 +39,38 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         }
     }
 
-    fun collectStatements(function: () -> Collection<String>) {
+    fun collectCodeLines(function: () -> Collection<String>) {
         function().forEach { statement ->
             builder.addStatement(statement)
         }
     }
 
-    fun collectStatementTemplates(function: () -> Collection<CodeTemplate>) {
+    fun collectCodeLineTemplates(function: () -> Collection<CodeTemplate>) {
         function().forEach { template ->
-            codeStatementTemplate(template)
+            codeLine(template)
         }
     }
 
-    fun code(function: () -> String) {
-        builder.add(function())
+    fun code(format: String, vararg args: Any?) {
+        builder.add(format, args)
+    }
+
+    fun codeLine(format: String, vararg args: Any?) {
+        codeLine(CodeTemplate(format, *args))
     }
 
     fun codeTemplate(function: () -> CodeTemplate) {
         builder.add(function().codeBlock)
     }
 
-    fun codeStatementTemplate(format: String, vararg args: Any?) {
-        codeStatementTemplate(CodeTemplate(format, *args))
-    }
-
-    private fun codeStatementTemplate(template: CodeTemplate) {
+    private fun codeLine(template: CodeTemplate) {
         builder.add("«")
         builder.add(template.codeBlock)
         builder.add("\n»")
     }
 
     companion object {
+
         fun FunctionTemplate.methodBodyTemplate(function: CodeTemplate.() -> Unit) {
             methodBody { CodeTemplate(function = function) }
         }
