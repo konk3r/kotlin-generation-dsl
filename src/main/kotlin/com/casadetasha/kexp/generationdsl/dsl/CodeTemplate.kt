@@ -30,7 +30,7 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         function?.let { this.function() }
 
         builder.unindent()
-        builder.add("\n${endFlowString}$suffix\n")
+        builder.add("${endFlowString}$suffix\n")
     }
 
     fun collectCodeTemplates(function: () -> Collection<CodeTemplate>) {
