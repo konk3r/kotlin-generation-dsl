@@ -45,7 +45,7 @@ class FileTemplate private constructor(
     }
 
     companion object {
-        fun fileTemplate(directory: String, packageName: String, fileName: String, buildFileFunction: FileTemplate.() -> Unit,): FileTemplate =
+        fun createFileTemplate(directory: String, packageName: String, fileName: String, buildFileFunction: FileTemplate.() -> Unit,): FileTemplate =
             FileTemplate(directory, packageName, fileName, buildFileFunction)
     }
 }

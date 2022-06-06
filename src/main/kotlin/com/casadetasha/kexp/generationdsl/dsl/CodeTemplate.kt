@@ -18,19 +18,33 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         codeBlock = builder.build()
     }
 
-    fun controlFlowCode(prefix: String, vararg prefixArgs: Any?,
+    fun controlFlowCode(prefix: String = "",
+                        vararg prefixArgs: Any?,
                         suffix: String = "",
-                        beginFlowString: String = "·{",
-                        endFlowString: String = "}",
-                        function: (CodeTemplate.() -> Unit)? = null) {
+                        beginFlowString: String = "·{\n",
+                        endFlowString: String = "\n}",
+                        function: (CodeTemplate.() -> Unit)) {
         builder.add(prefix, *prefixArgs)
-        builder.add("$beginFlowString\n")
+        builder.add(beginFlowString)
         builder.indent()
 
-        function?.let { this.function() }
+        this.function()
 
         builder.unindent()
         builder.add("${endFlowString}$suffix\n")
+    }
+
+    fun parenthesizedCodeBlock(prefix: String = "",
+                               vararg prefixArgs: Any?,
+                               suffix: String = "",
+                               function: (CodeTemplate.() -> Unit)) {
+        controlFlowCode(prefix = prefix,
+            prefixArgs = prefixArgs,
+            suffix = suffix,
+            beginFlowString = "(\n",
+            endFlowString = "\n)",
+            function = function
+        )
     }
 
     fun collectCodeTemplates(function: () -> Collection<CodeTemplate>) {
@@ -52,7 +66,7 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
     }
 
     fun code(format: String, vararg args: Any?) {
-        builder.add(format, args)
+        builder.add(format, *args)
     }
 
     fun codeLine(format: String, vararg args: Any?) {
@@ -67,12 +81,5 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         builder.add("«")
         builder.add(template.codeBlock)
         builder.add("\n»")
-    }
-
-    companion object {
-
-        fun FunctionTemplate.methodBodyTemplate(function: CodeTemplate.() -> Unit) {
-            methodBody { CodeTemplate(function = function) }
-        }
     }
 }

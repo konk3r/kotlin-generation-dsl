@@ -20,24 +20,13 @@ class FunctionTemplate(name: String,
         functionSpec = functionBuilder.build()
     }
 
-    fun methodBody(format: String, vararg args: Any?) {
-        functionBuilder.addCode(format, *args)
+    fun methodBody(methodTemplate: CodeTemplate) {
+        functionBuilder.addCode(methodTemplate.codeBlock)
     }
 
-    fun methodBody(function: () -> CodeTemplate) {
-        functionBuilder.addCode(function().codeBlock)
-    }
-
-    fun collectCode(function: () -> Collection<CodeTemplate>) {
-        function().forEach {
-            functionBuilder.addCode(it.codeBlock)
-        }
-    }
-
-    fun parenthesizedBlock(startingString: String, function: FunctionTemplate.() -> Unit) {
-        functionBuilder.addCode("$startingString(")
-        this.function()
-        functionBuilder.addCode("\n)")
+    fun methodBody(format: String = "", vararg args: Any?, function: (CodeTemplate.() -> Unit)? = null) {
+        val codeTemplate = CodeTemplate(format = format, args = args, function = function)
+        functionBuilder.addCode(codeTemplate.codeBlock)
     }
 
     fun override() {
