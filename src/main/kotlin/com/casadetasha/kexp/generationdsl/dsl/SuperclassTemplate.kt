@@ -19,16 +19,16 @@ class SuperclassTemplate private constructor(val className: TypeName,
             constructorParams.addAll(function())
         }
 
-        fun SuperclassTemplate.constructorParamTemplate(function: () -> CodeTemplate) {
+        fun SuperclassTemplate.generateConstructorParam(function: () -> CodeTemplate) {
             constructorParams.add(function())
         }
 
-        fun BaseTypeTemplate<*>.superclassTemplate(className: KClass<*>,
+        fun BaseTypeTemplate<*>.generateSuperClass(className: KClass<*>,
                                                    function: (SuperclassTemplate.() -> Unit)? = null) {
             addSuperclass(SuperclassTemplate(className = className.asTypeName(), function = function))
         }
 
-        fun BaseTypeTemplate<*>.superclassTemplate(className: TypeName,
+        fun BaseTypeTemplate<*>.generateSuperClass(className: TypeName,
                                                    function: (SuperclassTemplate.() -> Unit)? = null) {
             addSuperclass(SuperclassTemplate(className = className, function = function))
         }

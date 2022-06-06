@@ -20,11 +20,11 @@ class FunctionTemplate(name: String,
         functionSpec = functionBuilder.build()
     }
 
-    fun methodBody(methodTemplate: CodeTemplate) {
+    fun generateMethodBody(methodTemplate: CodeTemplate) {
         functionBuilder.addCode(methodTemplate.codeBlock)
     }
 
-    fun methodBody(format: String = "", vararg args: Any?, function: (CodeTemplate.() -> Unit)? = null) {
+    fun generateMethodBody(format: String = "", vararg args: Any?, function: (CodeTemplate.() -> Unit)? = null) {
         val codeTemplate = CodeTemplate(format = format, args = args, function = function)
         functionBuilder.addCode(codeTemplate.codeBlock)
     }
@@ -51,7 +51,7 @@ class FunctionTemplate(name: String,
             function().forEach { addFunction(it) }
         }
 
-        fun KotlinContainerTemplate.functionTemplate(
+        fun KotlinContainerTemplate.generateFunction(
             name: String,
             receiverType: ClassName? = null,
             returnType: ClassName? = null,

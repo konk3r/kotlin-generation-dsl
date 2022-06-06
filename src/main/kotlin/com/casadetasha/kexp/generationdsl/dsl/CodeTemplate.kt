@@ -18,12 +18,12 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         codeBlock = builder.build()
     }
 
-    fun controlFlowCode(prefix: String = "",
-                        vararg prefixArgs: Any?,
-                        suffix: String = "",
-                        beginFlowString: String = "·{\n",
-                        endFlowString: String = "\n}",
-                        function: (CodeTemplate.() -> Unit)) {
+    fun generateControlFlowCode(prefix: String = "",
+                                vararg prefixArgs: Any?,
+                                suffix: String = "",
+                                beginFlowString: String = "·{\n",
+                                endFlowString: String = "\n}",
+                                function: (CodeTemplate.() -> Unit)) {
         builder.add(prefix, *prefixArgs)
         builder.add(beginFlowString)
         builder.indent()
@@ -34,11 +34,11 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         builder.add("${endFlowString}$suffix\n")
     }
 
-    fun parenthesizedCodeBlock(prefix: String = "",
-                               vararg prefixArgs: Any?,
-                               suffix: String = "",
-                               function: (CodeTemplate.() -> Unit)) {
-        controlFlowCode(prefix = prefix,
+    fun generateParenthesizedCodeBlock(prefix: String = "",
+                                       vararg prefixArgs: Any?,
+                                       suffix: String = "",
+                                       function: (CodeTemplate.() -> Unit)) {
+        generateControlFlowCode(prefix = prefix,
             prefixArgs = prefixArgs,
             suffix = suffix,
             beginFlowString = "(\n",
@@ -61,23 +61,27 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
 
     fun collectCodeLineTemplates(function: () -> Collection<CodeTemplate>) {
         function().forEach { template ->
-            codeLine(template)
+            generateCodeLine(template)
         }
     }
 
-    fun code(format: String, vararg args: Any?) {
+    fun generateCode(format: String, vararg args: Any?) {
         builder.add(format, *args)
     }
 
-    fun codeLine(format: String, vararg args: Any?) {
-        codeLine(CodeTemplate(format, *args))
-    }
-
-    fun codeTemplate(function: () -> CodeTemplate) {
+    fun generateCodeTemplate(function: () -> CodeTemplate) {
         builder.add(function().codeBlock)
     }
 
-    private fun codeLine(template: CodeTemplate) {
+    fun generateNewLine() {
+        builder.add("\n")
+    }
+
+    fun generateCodeLine(format: String, vararg args: Any?) {
+        generateCodeLine(CodeTemplate(format, *args))
+    }
+
+    private fun generateCodeLine(template: CodeTemplate) {
         builder.add("«")
         builder.add(template.codeBlock)
         builder.add("\n»")

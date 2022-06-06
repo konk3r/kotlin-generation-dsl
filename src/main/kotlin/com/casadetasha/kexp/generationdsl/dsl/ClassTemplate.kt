@@ -70,7 +70,7 @@ open class ClassTemplate protected constructor(
     }
 
     companion object {
-        fun FileTemplate.classTemplate(
+        fun FileTemplate.generateClass(
             className: ClassName,
             modifiers: Collection<KModifier>? = null,
             annotations: Collection<AnnotationTemplate>? = null,
@@ -124,7 +124,7 @@ class CompanionObjectTemplate private constructor(
     }
 
     companion object {
-        fun ClassTemplate.companionObjectTemplate(
+        fun ClassTemplate.generateCompanionObject(
             modifiers: Collection<KModifier>? = null,
             annotations: Collection<AnnotationTemplate>? = null,
             function: CompanionObjectTemplate.() -> Unit,

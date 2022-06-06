@@ -116,7 +116,7 @@ class ConstructorPropertyTemplate(
     }
 
     companion object {
-        fun ConstructorTemplate.collectConstructorProperties(classTemplate: ClassTemplate, function: ConstructorTemplate.() -> Collection<ConstructorPropertyTemplate>) {
+        fun ConstructorTemplate.collectConstructorPropertyTemplates(classTemplate: ClassTemplate, function: ConstructorTemplate.() -> Collection<ConstructorPropertyTemplate>) {
             addConstructorProperties(classTemplate, this.function())
         }
 
