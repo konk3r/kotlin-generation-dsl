@@ -18,35 +18,6 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         codeBlock = builder.build()
     }
 
-    fun generateControlFlowCode(prefix: String = "",
-                                vararg prefixArgs: Any?,
-                                suffix: String = "",
-                                beginFlowString: String = "·{\n",
-                                endFlowString: String = "\n}",
-                                function: (CodeTemplate.() -> Unit)) {
-        builder.add(prefix, *prefixArgs)
-        builder.add(beginFlowString)
-        builder.indent()
-
-        this.function()
-
-        builder.unindent()
-        builder.add("${endFlowString}$suffix\n")
-    }
-
-    fun generateParenthesizedCodeBlock(prefix: String = "",
-                                       vararg prefixArgs: Any?,
-                                       suffix: String = "",
-                                       function: (CodeTemplate.() -> Unit)) {
-        generateControlFlowCode(prefix = prefix,
-            prefixArgs = prefixArgs,
-            suffix = suffix,
-            beginFlowString = "(\n",
-            endFlowString = "\n)",
-            function = function
-        )
-    }
-
     fun collectCodeTemplates(function: () -> Collection<CodeTemplate>) {
         function().forEach { template ->
             builder.add(template.codeBlock)
@@ -81,9 +52,38 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         generateCodeLine(CodeTemplate(format, *args))
     }
 
-    private fun generateCodeLine(template: CodeTemplate) {
+    fun generateCodeLine(template: CodeTemplate) {
         builder.add("«")
         builder.add(template.codeBlock)
         builder.add("\n»")
+    }
+
+    fun generateControlFlowCode(prefix: String = "",
+                                vararg prefixArgs: Any?,
+                                suffix: String = "",
+                                beginFlowString: String = "·{\n",
+                                endFlowString: String = "\n}",
+                                function: (CodeTemplate.() -> Unit)) {
+        builder.add(prefix, *prefixArgs)
+        builder.add(beginFlowString)
+        builder.indent()
+
+        this.function()
+
+        builder.unindent()
+        builder.add("${endFlowString}$suffix\n")
+    }
+
+    fun generateParenthesizedCodeBlock(prefix: String = "",
+                                       vararg prefixArgs: Any?,
+                                       suffix: String = "",
+                                       function: (CodeTemplate.() -> Unit)) {
+        generateControlFlowCode(prefix = prefix,
+            prefixArgs = prefixArgs,
+            suffix = suffix,
+            beginFlowString = "(\n",
+            endFlowString = "\n)",
+            function = function
+        )
     }
 }

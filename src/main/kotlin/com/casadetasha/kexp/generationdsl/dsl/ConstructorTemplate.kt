@@ -1,7 +1,7 @@
 package com.casadetasha.kexp.generationdsl.dsl
 
 import com.squareup.kotlinpoet.FunSpec
-
+import com.squareup.kotlinpoet.TypeName
 
 class ConstructorTemplate(function: ConstructorTemplate.() -> Unit) {
 
@@ -13,22 +13,30 @@ class ConstructorTemplate(function: ConstructorTemplate.() -> Unit) {
         constructorSpec = constructorBuilder.build()
     }
 
-    internal fun addParameter(parameterTemplate: ParameterTemplate) {
+    private fun addParameter(parameterTemplate: ParameterTemplate) {
         constructorBuilder.addParameter(parameterTemplate.parameterSpec)
     }
 
-    internal fun addParameters(parameterTemplates: Collection<ParameterTemplate>) {
+    private fun addParameters(parameterTemplates: Collection<ParameterTemplate>) {
         constructorBuilder.addParameters(parameterTemplates.map{ it.parameterSpec })
     }
 
-    internal fun addConstructorProperties(classTemplate: ClassTemplate, properties: Collection<ConstructorPropertyTemplate>) {
+    fun collectParameterTemplates(function: () -> Collection<ParameterTemplate>) {
+        addParameters(function())
+    }
+
+    fun collectConstructorPropertyTemplates(classTemplate: ClassTemplate, function: ConstructorTemplate.() -> Collection<ConstructorPropertyTemplate>) {
+        val properties = function()
         addParameters(properties.map { ParameterTemplate(name = it.name, typeName = it.typeName) })
         classTemplate.addProperties(properties)
     }
 
-    companion object {
-        fun BaseTypeTemplate<*>.generatePrimaryConstructor(function: ConstructorTemplate.() -> Unit) {
-            addPrimaryConstructor(ConstructorTemplate(function))
-        }
+    fun generateParameterTemplate(name: String, typeName: TypeName) {
+        addParameter(
+            ParameterTemplate(
+                name = name,
+                typeName = typeName
+            )
+        )
     }
 }

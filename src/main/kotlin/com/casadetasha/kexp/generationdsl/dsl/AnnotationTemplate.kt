@@ -14,7 +14,7 @@ class AnnotationTemplate(kClass: KClass<out Annotation>) {
         this.function()
     }
 
-    fun addMember(format: String, vararg args: Any) {
+    fun generateMember(format: String, vararg args: Any) {
         annotationBuilder.addMember(format, *args)
     }
 }

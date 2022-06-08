@@ -1,12 +1,13 @@
 package com.casadetasha.kexp.generationdsl.dsl
 
-import com.casadetasha.kexp.generationdsl.dsl.KotlinTemplate.toKModifier
+import com.casadetasha.kexp.generationdsl.dsl.KotlinModifiers.toKModifier
 import com.squareup.kotlinpoet.*
 
-class FunctionTemplate(name: String,
-                       receiverType: TypeName? = null,
-                       returnType: TypeName? = null,
-                       function: FunctionTemplate.() -> Unit
+class FunctionTemplate(
+    name: String,
+    receiverType: TypeName? = null,
+    returnType: TypeName? = null,
+    function: FunctionTemplate.() -> Unit
 ) {
 
     private val functionBuilder = FunSpec.builder(name)
@@ -15,9 +16,16 @@ class FunctionTemplate(name: String,
     init {
         receiverType?.let { functionBuilder.receiver(receiverType) }
         returnType?.let { functionBuilder.returns(returnType) }
-
         this.function()
         functionSpec = functionBuilder.build()
+    }
+
+    fun override() {
+        functionBuilder.addModifiers(KModifier.OVERRIDE)
+    }
+
+    fun visibility(function: () -> KotlinModifiers.Visibility) {
+        functionBuilder.addModifiers(function().toKModifier())
     }
 
     fun generateMethodBody(methodTemplate: CodeTemplate) {
@@ -29,35 +37,13 @@ class FunctionTemplate(name: String,
         functionBuilder.addCode(codeTemplate.codeBlock)
     }
 
-    fun override() {
-        functionBuilder.addModifiers(KModifier.OVERRIDE)
+    fun collectParameterTemplates(function: () -> Collection<ParameterTemplate>) {
+        functionBuilder.addParameters(function().map { it.parameterSpec })
     }
 
-    fun visibility(function: () -> KotlinTemplate.Visibility) {
-        functionBuilder.addModifiers(function().toKModifier())
-    }
-
-    internal fun addParameter(parameterTemplate: ParameterTemplate) {
-        functionBuilder.addParameter(parameterTemplate.parameterSpec)
-    }
-
-    internal fun addParameters(parameterTemplates: Collection<ParameterTemplate>) {
-        functionBuilder.addParameters(parameterTemplates.map{ it.parameterSpec })
-    }
-
-    companion object {
-
-        fun KotlinContainerTemplate.collectFunctionTemplates(function: KotlinContainerTemplate.() -> Collection<FunctionTemplate>) {
-            function().forEach { addFunction(it) }
-        }
-
-        fun KotlinContainerTemplate.generateFunction(
-            name: String,
-            receiverType: ClassName? = null,
-            returnType: ClassName? = null,
-            function: FunctionTemplate.() -> Unit
-        ) {
-            addFunction(FunctionTemplate(name, receiverType, returnType, function))
-        }
+    fun generateParameter(name: String, typeName: TypeName) {
+        functionBuilder.addParameter(
+            ParameterTemplate(name = name, typeName = typeName).parameterSpec
+        )
     }
 }
