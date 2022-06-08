@@ -1,13 +1,15 @@
 package com.casadetasha.kexp.generationdsl.dsl
 
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.KModifier
 import java.io.File
 
 class FileTemplate private constructor(
     private val directory: String,
     packageName: String,
     fileName: String,
-    buildFileFunction: FileTemplate.() -> Unit): KotlinContainerTemplate {
+    buildFileFunction: FileTemplate.() -> Unit): KotlinContainerTemplate() {
 
     private val fileBuilder = FileSpec.builder(
         packageName = packageName,
@@ -24,16 +26,12 @@ class FileTemplate private constructor(
         fileSpec.writeTo(File(directory))
     }
 
-    internal fun addClass(classTemplate: ClassTemplate) {
+    private fun addClass(classTemplate: ClassTemplate) {
         fileBuilder.addType(classTemplate.typeSpec)
     }
 
-    internal fun addObject(objectTemplate: ObjectTemplate) {
+    private fun addObject(objectTemplate: ObjectTemplate) {
         fileBuilder.addType(objectTemplate.typeSpec)
-    }
-
-    internal fun addImport(importTemplate: ImportTemplate) {
-        fileBuilder.addImport(importTemplate.importPackage, importTemplate.importName)
     }
 
     override fun addFunction(functionTemplate: FunctionTemplate) {
@@ -44,8 +42,32 @@ class FileTemplate private constructor(
         properties.forEach{ fileBuilder.addProperty(it.propertySpec) }
     }
 
+    fun generateClass(
+        className: ClassName,
+        modifiers: Collection<KModifier>? = null,
+        annotations: Collection<AnnotationTemplate>? = null,
+        function: ClassTemplate.() -> Unit,
+    ) {
+        addClass(ClassTemplate(className, modifiers, annotations, function))
+    }
+
+    fun generateObject(
+        className: ClassName,
+        modifiers: Collection<KModifier>? = null,
+        annotations: Collection<AnnotationTemplate>? = null,
+        function: ClassTemplate.() -> Unit,
+    ) {
+        addObject(ObjectTemplate(className, modifiers, annotations, function))
+    }
+
+    fun generateImport(importPackage: String, importName: String) {
+        val importTemplate = ImportTemplate(importPackage, importName)
+        fileBuilder.addImport(importTemplate.importPackage, importTemplate.importName)
+    }
+
     companion object {
+
         fun generateFile(directory: String, packageName: String, fileName: String, buildFileFunction: FileTemplate.() -> Unit,): FileTemplate =
-            FileTemplate(directory, packageName, fileName, buildFileFunction)
+                FileTemplate(directory, packageName, fileName, buildFileFunction)
     }
 }

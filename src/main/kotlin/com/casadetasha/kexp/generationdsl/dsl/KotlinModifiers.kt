@@ -2,7 +2,8 @@ package com.casadetasha.kexp.generationdsl.dsl
 
 import com.squareup.kotlinpoet.KModifier
 
-object KotlinTemplate {
+object KotlinModifiers {
+
     enum class Visibility {
         PRIVATE,
         PROTECTED,
