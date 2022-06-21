@@ -11,6 +11,7 @@ val kotlinVersion: String by project
 val googleAutoServiceVersion: String by project
 
 val exposedVersion: String by project
+val assertKVersion: String by project
 
 val prop = Properties().apply {
     load(FileInputStream(File(project.gradle.gradleUserHomeDir, "local.properties")))
@@ -20,7 +21,7 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.7.0"
 }
 
 repositories {
@@ -28,14 +29,14 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
     implementation("com.squareup:kotlinpoet:$kotlinpoetVersion")
     implementation("com.squareup:kotlinpoet-metadata:$kotlinpoetVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
-    testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.4")
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.24")
+    testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.9")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:$assertKVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
 }
 
