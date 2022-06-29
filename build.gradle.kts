@@ -82,7 +82,7 @@ publishing {
 
             group = "com.casadetasha"
             artifactId = "kotlin-generation-dsl"
-            version = "0.1.0"
+            version = "0.2.1"
 
             artifact(sourcesJar.get())
             artifact(javadocJar.get())

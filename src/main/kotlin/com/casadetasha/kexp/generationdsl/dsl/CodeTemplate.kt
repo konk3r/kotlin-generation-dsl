@@ -44,8 +44,10 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         builder.add(function().codeBlock)
     }
 
-    fun generateNewLine() {
-        builder.add("\n")
+    fun generateNewLine(times: Int = 1) {
+        (1..times).onEach {
+            builder.add("\n")
+        }
     }
 
     fun generateCodeLine(format: String, vararg args: Any?) {
@@ -62,7 +64,7 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
                                 vararg prefixArgs: Any?,
                                 suffix: String = "",
                                 beginFlowString: String = "·{\n",
-                                endFlowString: String = "\n}",
+                                endFlowString: String = "\n}\n",
                                 function: (CodeTemplate.() -> Unit)) {
         builder.add(prefix, *prefixArgs)
         builder.add(beginFlowString)
@@ -71,7 +73,7 @@ class CodeTemplate(startingCodeBlock: CodeBlock? = null, function: (CodeTemplate
         this.function()
 
         builder.unindent()
-        builder.add("${endFlowString}$suffix\n")
+        builder.add("${endFlowString}$suffix")
     }
 
     fun generateParenthesizedCodeBlock(prefix: String = "",
