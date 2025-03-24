@@ -4,8 +4,6 @@ import com.casadetasha.kexp.generationdsl.dsl.KotlinModifiers.toKModifier
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.asTypeName
-import kotlin.reflect.KClass
 
 open class PropertyTemplate(
     val name: String,

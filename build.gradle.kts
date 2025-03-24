@@ -21,7 +21,7 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") version "2.1.0"
 }
 
 repositories {
@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.9.0")
     implementation("com.squareup:kotlinpoet:$kotlinpoetVersion")
     implementation("com.squareup:kotlinpoet-metadata:$kotlinpoetVersion")
 
@@ -71,8 +71,8 @@ publishing {
         maven {
             url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
             credentials {
-                username = prop.getProperty("ossrhUsername")
-                password = prop.getProperty("ossrhPassword")
+                username = prop.getProperty("newOssrhUsername")
+                password = prop.getProperty("newOssrhPassword")
             }
         }
     }
@@ -82,7 +82,7 @@ publishing {
 
             group = "com.casadetasha"
             artifactId = "kotlin-generation-dsl"
-            version = "0.2.1"
+            version = "2.1.0-alpha1"
 
             artifact(sourcesJar.get())
             artifact(javadocJar.get())

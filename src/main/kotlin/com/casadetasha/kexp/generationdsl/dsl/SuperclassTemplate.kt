@@ -1,8 +1,6 @@
 package com.casadetasha.kexp.generationdsl.dsl
 
 import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.asTypeName
-import kotlin.reflect.KClass
 
 class SuperclassTemplate constructor(val className: TypeName,
                                              function: (SuperclassTemplate.() -> Unit)?) {

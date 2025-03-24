@@ -41,6 +41,10 @@ sealed class BaseTypeTemplate<TYPE>(
         }
     }
 
+    fun addJavaDoc(javaDoc: String) {
+        typeBuilder.addKdoc(javaDoc)
+    }
+
     fun generateSuperClass(className: KClass<*>, function: (SuperclassTemplate.() -> Unit)? = null) {
         addSuperclass(SuperclassTemplate(className = className.asTypeName(), function = function))
     }
