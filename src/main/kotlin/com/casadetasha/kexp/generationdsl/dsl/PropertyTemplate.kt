@@ -17,7 +17,7 @@ open class PropertyTemplate(
 
     internal val propertySpec: PropertySpec by lazy {
         annotations?.let { propertyBuilder.addAnnotations(annotations.map { it.annotationSpec } ) }
-        isMutable?.let { propertyBuilder.mutable() }
+        isMutable?.let { propertyBuilder.mutable(it) }
         function?.let { this.function() }
         propertyBuilder.build()
     }
@@ -32,6 +32,10 @@ open class PropertyTemplate(
 
     fun override() {
         propertyBuilder.addModifiers(KModifier.OVERRIDE)
+    }
+
+    fun lateinit() {
+        propertyBuilder.addModifiers(KModifier.LATEINIT)
     }
 
     fun visibility(function: () -> KotlinModifiers.Visibility) {
